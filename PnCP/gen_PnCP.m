@@ -29,8 +29,7 @@ end
 verb = values{1}; % hack, for now
 
 
-
-
+% YALMIP solver
 x = sdpvar(n,1);
 y = sdpvar(m,1);
 z = kron(x,y);
@@ -65,9 +64,9 @@ del = value(delta);
 % return PnCP map in correct format
 phi = del * vf  + (vh*vh');
 %phi = 2 * vf + (vh*vh');
-phi = reshape(phi,[n,m,n,m]);
+phi = reshape(phi,[m,n,m,n]); % check carefully correct dimensions"
 phi = permute(phi,[1,3,2,4]);
-phi = reshape(phi,[n*n,m*m]);
+phi = reshape(phi,[m*m,n*n]);
 %
 Phi = @(m,S) reshape(phi*S(:),[m,m]);
 

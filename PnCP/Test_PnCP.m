@@ -3,16 +3,21 @@
 %% Test 1: generate PnCP from section 4.6 in [Klep et al.]
 
 n = 3;
-m = 3;
+m = 4;
 d = n+m-2;
 %
 N = nchoosek(n+1,2);
 M = nchoosek(m+1,2);
 
-% test example
-[x,y,Z] = Klep_step1_1(n,m,'example');
-Vh      = Klep_step1_2(n,m,Z,'example');
-v       = Klep_step2(n,m,Z,'example');
+% test random
+[x,y,Z] = Klep_step1_1(n,m);
+Vh      = Klep_step1_2(n,m,Z);
+v       = Klep_step2(n,m,Z);
+
+% % test example
+% [x,y,Z] = Klep_step1_1(n,m,'example');
+% Vh      = Klep_step1_2(n,m,Z,'example');
+% v       = Klep_step2(n,m,Z,'example');
 
 % check that we retrieve explicitely the polynomial obtained in [Klep...]
 v     = reshape(v,n*m,n*m);
@@ -59,8 +64,8 @@ K  = reshape(K,[],1,dK);
 
 % monitors
 delta_list = zeros(ntest,1);
-vf_list    = zeros(n,m,n,m,ntest);
-vh_list    = zeros(n,m,d+1,ntest);
+vf_list    = zeros(m,n,m,n,ntest);
+vh_list    = zeros(m,n,d+1,ntest);
 
 for a = 1:ntest
 	fprintf('%i-',a);
@@ -83,7 +88,7 @@ for a = 1:ntest
 	% one in K_inter
 	ga = rand(1,di);
 	vf = sum(ga.*K_inter,2);
-	vf = reshape(vf,[n,m,n,m]); % TODO: check if dimensions are in correct order!
+	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
 	
 	[Phi,delta] = gen_PnCP(n,m,vf,vh,'verbose',0);
 	

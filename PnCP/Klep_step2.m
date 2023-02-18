@@ -117,7 +117,7 @@ if nargin > 3
 		  -7/2,  1/4,  -1 , -5/4,   0 ,  -2 ,   1 ,   2 ,   2 ];
 end
 
-v = reshape(v,[m,n,m,n]);
+v = reshape(v,[m,n,m,n]); % TODO: check carefully correct dimensions!
 
 end
 
