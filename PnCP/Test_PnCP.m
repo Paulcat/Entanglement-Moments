@@ -3,7 +3,7 @@
 %% Test 1: generate PnCP from section 4.6 in [Klep et al.]
 
 n = 3;
-m = 4;
+m = 3;
 d = n+m-2;
 %
 N = nchoosek(n+1,2);
@@ -33,7 +33,7 @@ for i = 1:N
 end
 
 % solve sdp with Yalmip
-[Phi,del,sol] = gen_PnCP(n,m,v,Vh);
+[~,del,sol,Phi] = gen_one_PnCP(n,m,v,Vh);
 
 % example of output
 S = [0,0,1;0,0,0;1,0,0];
@@ -49,7 +49,7 @@ d = n+m-2;
 N = nchoosek(n+1,2);
 M = nchoosek(m+1,2);
 
-ntest = 50;
+ntest = 10;
 
 % specific initial points and resulting kernels
 [~,~,Z]     = Klep_step1_1(n,m,'example');
@@ -90,7 +90,7 @@ for a = 1:ntest
 	vf = sum(ga.*K_inter,2);
 	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
 	
-	[Phi,delta] = gen_PnCP(n,m,vf,vh,'verbose',0);
+	[Phi,delta] = gen_one_PnCP(n,m,vf,vh,'verbose',0);
 	
 	% store values
 	delta_list(a)      = delta;

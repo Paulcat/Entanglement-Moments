@@ -1,75 +1,85 @@
-function [Phi,del,sol] = gen_PnCP(n,m,vf,vh,varargin)
-%GEN_PNCP Generate a PnCP map
-%   Needs YALMIP
-%   Copyright: Abhishek Bhardwaj
+function [Maps,Deltas] = gen_PnCP(n,m,options)
+%GEN_PNCP Generate PnCP map(s)
+%   Successive maps are generate by changing vectors in kernels, not
+%   the seed points.
+%
+%   Supported options:
+%    - mode: 
+%       'hit-tol':  return one PnCP map satysfing criterion (default)
+%       'gen-many': return all maps found, including bad ones
+%    - ntest: maximum number of tries for PnCP maps
+%    - tolerance
+%
+%   See also GEN_ONE_PNCP
 
 d = n+m-2;
 
 
-
 % process input options % TODO: put in separate function
-defaults = {'verbose',2};
-% default options
-names  = defaults(1:2:end);
-values = defaults(2:2:end);
-% specified options
-snames  = varargin(1:2:end);
-svalues = varargin(2:2:end);
+mode  = getoptions(options,'mode','hit-tol');
+ntest = getoptions(options,'ntest',100);
+tol   = getoptions(options,'tol',1e-1);
 
-for a = 1:length(snames)
-	sname = snames{a};
-	id = find(strcmp(names,sname));
-	
-	% set values
-	if id==0
-		error('unknown option: %s', sname);
+tol_mode = strcmp(mode,'hit-tol'); % check for tolerance mode
+
+
+% specific initial points and resulting kernels
+[~,~,Z]     = Klep_step1_1(n,m,'example');
+[~,K,K1]    = Klep_step1_2(n,m,Z);
+[~,K_inter] = Klep_step2(n,m,Z);
+
+
+% dimensions
+dK = size(K,2);
+d1 = size(K1,2);
+di = size(K_inter,2);
+K  = reshape(K,[],1,dK); 
+
+Maps    = [];
+Deltas  = [];
+
+i = 0;
+while i <= ntest
+	fprintf('%i ',i);
+	if ~mod(i,30)
+		fprintf('\n');
 	end
-	values{id} = svalues{id};
+
+	% d random linear combination in K
+	al = rand(1,d,dK);
+	vj = sum(al.*K,3); % % each column defines the linear form <vj',z>
+	vj = reshape(vj,n,m,d); % row and columns are switched (cf Klep_step2.m)
+	% (reshape is probably useless)
+
+	% one in K1
+	be = rand(1,d1);
+	v0 = sum(be.*K1,2);
+	v0 = reshape(v0,m,n); % rows and columns switched
+
+	% all vectors
+	vh = cat(3,v0,vj);
+
+	% one in K_inter
+	ga = rand(1,di);
+	vf = sum(ga.*K_inter,2);
+	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
+
+	% compute PnCP map
+	[phi,delta]     = gen_one_PnCP(n,m,vf,vh,'verbose',0);
+	
+	% store results
+	Maps(:,:,end+1) = phi;
+	Deltas(end+1)   = delta;
+
+	if (delta > tol) && tol_mode
+		Maps   = Maps(:,:,end);
+		Deltas = Deltas(end);
+		break;
+	end
+	
+	i = i+1;
 end
-verb = values{1}; % hack, for now
-
-
-% YALMIP solver
-x = sdpvar(n,1);
-y = sdpvar(m,1);
-z = kron(x,y);
-
-sdpvar delta
-
-mon = monolist([x;y],d);
-mon = mon(2:end);
-
-% quadratic forms
-vf = reshape(vf,n*m,n*m);
-vh = reshape(vh,n*m,d+1);
-f  = vf(:)' * kron(z,z); % positive not in <h0,...,hd> component
-h  = vh' * z; % h'*h SOS component
-
-F = delta * f + (h'*h);
-
-% Artin-based relaxation
-l = 1; % order of relaxation
-relax = F * (kron(x,y)'*kron(x,y))^l;
-
-% Yalmip sos constraint
-constraint = sos(relax);
-
-% sdp solver
-opt = sdpsettings('solver','sdpt3'); % preferably mosek
-opt.verbose = verb;
-%
-[sol,u,Q,res] = solvesos(constraint,-delta,opt,delta);
-del = value(delta);
-
-% return PnCP map in correct format
-phi = del * vf  + (vh*vh');
-%phi = 2 * vf + (vh*vh');
-phi = reshape(phi,[m,n,m,n]); % check carefully correct dimensions"
-phi = permute(phi,[1,3,2,4]);
-phi = reshape(phi,[m*m,n*n]);
-%
-Phi = @(m,S) reshape(phi*S(:),[m,m]);
-
+fprintf('\n\n');
 
 end
 
