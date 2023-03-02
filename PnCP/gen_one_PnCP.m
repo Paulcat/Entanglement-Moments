@@ -5,8 +5,6 @@ function [phi,del,sol,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
 
 d = n+m-2;
 
-
-
 % process input options % TODO: put in separate function
 defaults = ...
 	{'verbose', 2, ...
@@ -58,7 +56,7 @@ relax = F * (kron(x,y)'*kron(x,y))^l;
 constraint = sos(relax);
 
 % sdp solver
-opt = sdpsettings('solver','sdpt3'); % preferably mosek
+opt = sdpsettings('solver','mosek'); % preferably mosek
 opt.verbose = verb;
 %
 [sol,u,Q,res] = solvesos(constraint,-delta,opt,delta);
