@@ -1,4 +1,4 @@
-function  []= isentangled(order,state,dim)
+function  [answer]= isentangled(order,state,dim)
 % isentangled tries to check if a state is entangled using partial knowledge 
 % of order order(1) for the first party and order(2) for the second party.
 
@@ -52,7 +52,7 @@ end
 
 
 
-
+answer = sol.problem ;
 
 
 

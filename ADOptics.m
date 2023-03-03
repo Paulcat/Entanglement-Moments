@@ -2,6 +2,7 @@ function M = ADOptics(rho, eta)
 
 % Computes the effect of amplitude damping noise on a density matrix, according to a parameter eta
 % The PartialTrace command needs the package QETLAB
+% PROGRAM NOT WORKING
 
 dims = size(rho, 1) ; % system dimension
 dima = 2 ; % Ancilla dimension
