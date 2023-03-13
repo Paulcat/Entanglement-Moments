@@ -1,14 +1,17 @@
 function [Maps,Deltas] = gen_PnCP(n,m,options)
 %GEN_PNCP Generate PnCP map(s)
-%   Successive maps are generate by changing vectors in kernels, not
-%   the seed points.
+%   Successive maps are generate by changing initial seed points, as
+%   well as vectors in kernels.
 %
 %   Supported options:
 %    - mode: 
-%       'hit-tol':  return one PnCP map satysfing criterion (default)
-%       'gen-many': return all maps found, including bad ones
-%    - ntest: maximum number of tries for PnCP maps
-%    - tolerance
+%       'hit-tol' (default): return one PnCP map satysfing criterion
+%       'gen-many'         : return all maps found including bad ones
+%    - ntest (100)         : maximum number of tries for PnCP maps
+%    - tol (1e-2)          : tolerance for the hit-tol mode
+%    - solver (sdpt3)      : solver for the SDP program
+%    - toolbox (yalmip)    : yalmip or (todo: cvx)
+%    - verbose (1)
 %
 %   See also GEN_ONE_PNCP
 
@@ -16,34 +19,36 @@ d = n+m-2;
 
 
 % process input options % TODO: put in separate function
-mode  = getoptions(options,'mode','hit-tol');
-ntest = getoptions(options,'ntest',100);
-tol   = getoptions(options,'tol',1e-1);
+mode    = getoptions(options,'mode','hit-tol');
+nmax    = getoptions(options,'ntest',100);
+tol     = getoptions(options,'tol',1e-1);
+solver  = getoptions(options,'solver','sdpt3');
+toolbox = getoptions(options,'toolbox','yalmip');
+verbose = getoptions(options,'verbose',1);
 
 tol_mode = strcmp(mode,'hit-tol'); % check for tolerance mode
 
 
-% specific initial points and resulting kernels
-[~,~,Z]     = Klep_step1_1(n,m,'example');
-[~,K,K1]    = Klep_step1_2(n,m,Z);
-[~,K_inter] = Klep_step2(n,m,Z);
-
-
-% dimensions
-dK = size(K,2);
-d1 = size(K1,2);
-di = size(K_inter,2);
-K  = reshape(K,[],1,dK); 
-
-Maps    = [];
-Deltas  = [];
-
-i = 0;
-while i <= ntest
+Maps   = [];
+Deltas = [];
+i      = 0;
+while i<=nmax
 	fprintf('%i ',i);
 	if ~mod(i,30)
-		fprintf('\n');
+		frpintf('\n');
 	end
+
+	% random initial points and resulting kernels
+	% [~,~,Z]     = Klep_step1_1(n,m,'example'); % specific points
+	[~,~,Z]     = Klep_step1_1(n,m);
+	[~,K,K1]    = Klep_step1_2(n,m,Z);
+	[~,K_inter] = Klep_step2(n,m,Z);
+
+	% dimensions
+	dK = size(K,2);
+	d1 = size(K1,2);
+	di = size(K_inter,2);
+	K  = reshape(K,[],1,dK);
 
 	% d random linear combination in K
 	al = rand(1,d,dK);
@@ -65,7 +70,8 @@ while i <= ntest
 	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
 
 	% compute PnCP map
-	[phi,delta]     = gen_one_PnCP(n,m,vf,vh,'verbose',0);
+	[phi,delta]     = gen_one_PnCP(n,m,vf,vh,...
+		'verbose',verbose,'solver',solver,'toolbox',toolbox);
 	
 	% store results
 	Maps(:,:,end+1) = phi;
@@ -80,6 +86,12 @@ while i <= ntest
 	i = i+1;
 end
 fprintf('\n\n');
+
+if i==nmax+1 && tol_mode
+	% no satisfying map was found
+	warning('no satisfying map was found, returning random map');
+	Maps = rand(m^2,n^2);
+end
 
 end
 
