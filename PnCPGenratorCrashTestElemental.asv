@@ -1,0 +1,28 @@
+% A script to test the PnCP generation
+% An entangled state A is loaded
+% A white Noise moel is applied
+% A PnCP is generated and applied ; the eigenvalues of the result are
+% checked ; if at least one is negative, the entanglement is detected ;
+% otherwise a new map is detected
+
+A = load('rho3x3.txt') ; 
+
+j = 10 ; % Max number of PnCP
+    while ntemp > 0 || j > 0
+    j = j -1;
+    disp('PnCP generated to test entanglement')
+    [phi,Deltas]=gen_PnCP(3,3,'hit-tol');
+    Mattemp=ApplyPnCP(B,phi);
+    ntemp = min(eig(Mattemp));
+    end
+else
+    disp('PnCP generator not needed')
+end
+end
+
+if ntemp < 0
+    disp('Entanglement detected thanks to PnCP generation')
+else
+    disp('Entanglement not detected through PnCP generation')
+end
+
