@@ -1,7 +1,7 @@
-function [phi,del,sol,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
+function [phi,del,sol,flag,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
 %GEN_ONE_PNCP Generate a PnCP map
 %   Needs YALMIP
-%   Original author: Abhishek Bhardwaj
+%   Original author: Abhishek Bhardwaj (functions step3*)
 %
 %   Inputs:
 %       - n, m: dimensions
@@ -21,12 +21,15 @@ d = n+m-2;
 % default options
 defaults = ...
 	{'verbose', 2, ...
-	 'order-max', 1 ... % maximum relaxation order (inutile)
+	 'maxorder', 2 ... % maximum relaxation order
+	 'tolerance',1e-2,...
+	 'method','klep', ...
 	 'toolbox', 'yalmip', ...
-	 'solver', 'mosek'
+	 'solver', 'mosek',...
 	};
 
-[verbose,order,toolbox,solver] = process_options(varargin,defaults{:});
+[verbose,maxorder,tol,method,toolbox,solver] = ...
+	process_options(varargin,defaults{:});
 
 
 
@@ -43,32 +46,86 @@ switch toolbox
 		vh = reshape(vh,n*m,d+1);
 		f  = vf(:)' * kron(z,z); % positive not in <h0,...,hd> component
 		h  = vh' * z; % h'*h SOS component
-		
-		sdpvar delta
-		
-		mon = monolist([x;y],d);
-		mon = mon(2:end);
-		
-		% positive polynomial
-		F = delta * f + (h'*h);
-		
-		% Artin-based relaxation
-		l = 1; % order of relaxation
-		relax = F * (kron(x,y)'*kron(x,y))^l;
-		
-		% Yalmip sos constraint
-		constraint = sos(relax);
-		
-		% sdp solver
+
 		opt = sdpsettings('solver',solver); % preferably mosek
 		opt.verbose = verbose;
-		%
-		[sol,u,Q,res] = solvesos(constraint,-delta,opt,delta);
-		del = value(delta);
-		
-		% TODO: implement a loop if tolerance not reached to go to
-		% higher relaxations orders
-		
+
+		switch method
+			case 'klep'
+				% coordinate norm relaxation see [Klep et al.]
+
+				% sos perturbation
+				sdpvar delta;
+
+				% positive polynomial
+				F = delta*f + (h'*h);
+
+				% coordinate norm relaxation
+				l = 1; % order of relaxation
+				flag = 0;
+				while l<=maxorder && ~flag
+					% Artin based relaxation with fixed denominator
+					relax = F * (kron(x,y)'*kron(x,y))^l; % kron(x,y) is simply all monomials of bi-degree 1
+
+					% Yalmip sos constraint
+					constraint = sos(relax);
+
+					% solve SDP
+					[sol,u,Q,res] = solvesos(constraint,-delta,opt,delta);
+					del = value(delta);
+
+					% evaluate quality of solution
+					flag = sol.problem==0 && floor(log10(res))<-6 && del > tol;
+					
+					l = l+1;
+				end
+
+			case 'hilbert'
+				% general denominator + bisection method
+				% method (3.1) in [Bhardwaj, 2020]
+
+				% relax on degree of denominator
+				l    = 1;
+				flag = 0;
+				while l <= maxorder && ~flag
+
+					% monomials (for denominator)
+					mon  = monolist([x;y],l);
+					mon  = mon(2:end);
+					nmon = size(mon,1);
+
+					% symbolic Gram matrix for denominator
+					G = sdpvar(nmon,nmon,'symmetric');
+					D = mon'*G*mon;
+
+					% initialize delta
+					del = 1;
+
+					% positive polynomial
+					F = del*f + (h'*h);
+
+					% sos constraint + trace constraint
+					constraint = [sos(D*F); trace(G)==1];
+
+					% bisection over del
+					test = 0;
+					while ~test && del>tol
+						% solve SDP
+						[sol,u,Q,res] = solvesos(constraint,[],opt,G(:));
+
+						% quality of solution
+						test = sol.problem==0 && floor(log10(res))<-6;
+						del = del/2;
+					end
+
+					flag = test && del > tol;
+					l = l+1;
+				end
+
+			case 'KKT'
+				error('not implemented yet');
+		end
+
 		% return PnCP map in correct format
 		phi = del * vf  + (vh*vh');
 		%phi = 2 * vf + (vh*vh');

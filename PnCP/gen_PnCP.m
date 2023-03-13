@@ -21,7 +21,9 @@ d = n+m-2;
 % process input options % TODO: put in separate function
 mode    = getoptions(options,'mode','hit-tol');
 nmax    = getoptions(options,'ntest',100);
+maxor   = getoptions(options,'maxorder',2);
 tol     = getoptions(options,'tol',1e-1);
+method  = getoptions(options,'method','klep');
 solver  = getoptions(options,'solver','sdpt3');
 toolbox = getoptions(options,'toolbox','yalmip');
 verbose = getoptions(options,'verbose',1);
@@ -35,7 +37,7 @@ i      = 0;
 while i<=nmax
 	fprintf('%i ',i);
 	if ~mod(i,30)
-		frpintf('\n');
+		fprintf('\n');
 	end
 
 	% random initial points and resulting kernels
@@ -70,14 +72,15 @@ while i<=nmax
 	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
 
 	% compute PnCP map
-	[phi,delta]     = gen_one_PnCP(n,m,vf,vh,...
-		'verbose',verbose,'solver',solver,'toolbox',toolbox);
+	[phi,delta,~,flag]  = gen_one_PnCP(n,m,vf,vh,...
+		'verbose',verbose,'maxorder',maxor,'solver',solver,'toolbox',toolbox,...
+		'method',method,'tolerance',tol);
 	
 	% store results
 	Maps(:,:,end+1) = phi;
 	Deltas(end+1)   = delta;
 
-	if (delta > tol) && tol_mode
+	if flag && tol_mode
 		Maps   = Maps(:,:,end);
 		Deltas = Deltas(end);
 		break;
