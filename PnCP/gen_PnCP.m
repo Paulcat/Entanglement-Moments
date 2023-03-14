@@ -34,7 +34,13 @@ tol_mode = strcmp(mode,'hit-tol'); % check for tolerance mode
 Maps   = [];
 Deltas = [];
 i      = 0;
+if verbose && tol_mode
+	fprintf('%2s Generate random PnCP until one works (maximum number of tries: %i)\n','',nmax)
+elseif verbos
+	fprintf('%2s Generate random PnCP, no quality control (maximum: %i)\n','',nmax);
+end
 while i<=nmax
+	fprintf('%2s Try n°%i \n','',i+1);
 	%fprintf('%i ',i);
 	%if ~mod(i+1,30)
 	%	fprintf('\n');
@@ -92,11 +98,11 @@ end
 
 if i==nmax+1 && tol_mode
 	% no satisfying map was found
-	fprintf('\t no satisfying map was found, returning random map\n');
+	fprintf('%2s no satisfying map was found, returning random map\n\n','');
 	Maps = rand(m^2,n^2);
 elseif tol_mode
-	fprintf('\t map found: residual=%d, delta=%d, sdpflag = %i\n',...
-		info.res,delta,info.flag_sol)
+	fprintf('%2s Map found: residual=%d, delta=%d, sdpflag = %i\n\n',...
+		'',info.res,delta,info.flag_sol)
 end
 
 end

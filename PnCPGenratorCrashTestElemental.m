@@ -16,16 +16,18 @@ j = nmax ; % Max number of PnCP
 while j > 0
     j = j-1;
     %disp('PnCP generated to test entanglement');
+	 fprintf('Test n°%i\n',nmax-j);
+	 fprintf('--------\n');
 
 	 % set options
 	 options.mode     = 'hit-tol';
-	 options.tol      = 1e-2;
+	 options.tol      = 1e-4;
 	 options.ntest    = 30;
 	 options.method   = 'klep';
-	 options.maxorder = 2;
+	 options.maxorder = 1;
 	 options.solver   = 'mosek';
 	 options.toolbox  = 'yalmip';
-	 options.verbose  = 0;
+	 options.verbose  = 1;
 
 	 tic;
     [phi,delta] = gen_PnCP(dA,dB,options);
@@ -37,9 +39,11 @@ while j > 0
     [~,Mattemp] = ApplyPnCP(dA,dB,rho,phi);
     ntemp = min(eig(Mattemp));
     if ntemp < 0
-        fprintf('%i. test: Entanglement detected\n',nmax-j);
+        fprintf('%i. Entanglement detected, youhou!!\n',nmax-j);
+		  fprintf('**********************************\n\n',nmax-j);
 		  phi_working{end+1} = phi;
     else
-        fprintf('%i. test: Not detected\n',nmax-j);
+        fprintf('%i. Not detected, boooh!!\n',nmax-j);
+		  fprintf('**********************************\n\n',nmax-j);
     end
 end
