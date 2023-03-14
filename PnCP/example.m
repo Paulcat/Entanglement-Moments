@@ -6,12 +6,13 @@ m = 3;
 
 % set options
 options = struct;
-options.mode   = 'hit-tol'; % stop searching after finding 'quality' map
-options.tol   = 1e-2; % criterion of quality
+options.mode   = 'gen-many'; % stop searching after finding 'quality' map
+options.tol   = 1e-4; % criterion of quality
 options.ntest = 50;
-options.method = 'hilbert'; % choice of implementation
-options.maxorder = 2; % maximum relaxation order
+options.method = 'klep'; % choice of implementation
+options.maxorder = 1; % maximum relaxation order
 options.solver = 'mosek';
+options.verbose = 0;
 
 % generate PnCP
 [phi,delta] = gen_PnCP(n,m,options);

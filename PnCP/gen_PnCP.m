@@ -35,10 +35,10 @@ Maps   = [];
 Deltas = [];
 i      = 0;
 while i<=nmax
-	fprintf('%i ',i);
-	if ~mod(i,30)
-		fprintf('\n');
-	end
+	%fprintf('%i ',i);
+	%if ~mod(i+1,30)
+	%	fprintf('\n');
+	%end
 
 	% random initial points and resulting kernels
 	% [~,~,Z]     = Klep_step1_1(n,m,'example'); % specific points
@@ -88,7 +88,7 @@ while i<=nmax
 	
 	i = i+1;
 end
-fprintf('\n\n');
+%fprintf('\n\n');
 
 if i==nmax+1 && tol_mode
 	% no satisfying map was found

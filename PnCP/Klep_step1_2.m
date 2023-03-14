@@ -33,7 +33,7 @@ if nargin > 3 % example 4.6 in [Klep et al.]
 	Vj(:,:,4) = reshape([0;6;0;-6;-6;0;0;0;6],m,n);
 end
 
-warning('We must make sure that Ker(Vj*) intersects sufficiently with Segre variety, see Step 1.2');
+%warning('We must make sure that Ker(Vj*) intersects sufficiently with Segre variety, see Step 1.2');
 
 % Step 1.3
 % kernel associated with our random points minus last
@@ -50,7 +50,7 @@ if nargin > 3
 	v0 = [-2,-2,1;2,0,0;-1,0,2];
 end
 
-warning('same test to perform, see Step 1.3');
+%warning('same test to perform, see Step 1.3');
 
 V = cat(3,v0,Vj); % V of size m x n x (d+1), contains all the coefficietns of h0,...,hd
 
