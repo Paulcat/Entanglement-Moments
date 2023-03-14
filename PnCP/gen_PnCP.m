@@ -72,7 +72,7 @@ while i<=nmax
 	vf = reshape(vf,[m,n,m,n]); % TODO: check if dimensions are in correct order!
 
 	% compute PnCP map
-	[phi,delta,~,flag]  = gen_one_PnCP(n,m,vf,vh,...
+	[phi,delta,info]  = gen_one_PnCP(n,m,vf,vh,...
 		'verbose',verbose,'maxorder',maxor,'solver',solver,'toolbox',toolbox,...
 		'method',method,'tolerance',tol);
 	
@@ -80,7 +80,7 @@ while i<=nmax
 	Maps(:,:,end+1) = phi;
 	Deltas(end+1)   = delta;
 
-	if flag && tol_mode
+	if info.success && tol_mode
 		Maps   = Maps(:,:,end);
 		Deltas = Deltas(end);
 		break;
@@ -92,8 +92,11 @@ end
 
 if i==nmax+1 && tol_mode
 	% no satisfying map was found
-	warning('no satisfying map was found, returning random map');
+	fprintf('\t no satisfying map was found, returning random map\n');
 	Maps = rand(m^2,n^2);
+elseif tol_mode
+	fprintf('\t map found: residual=%d, delta=%d, sdpflag = %i\n',...
+		info.res,delta,info.flag_sol)
 end
 
 end

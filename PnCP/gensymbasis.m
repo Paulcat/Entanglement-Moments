@@ -1,4 +1,4 @@
-function [H,Hn] = gen_sym_basis(n,m)
+function [H,Ea,Eb,Hn] = gensymbasis(n,m)
 %GEN_SYM_BASIS Generate elementary symmetric matrices
 %   GEN_SYM_BASIS(N,M) returns the list of matrices units H(i,j,k,l) such
 %   that
@@ -39,8 +39,10 @@ om = setdiff(1:M,dm);
 % (require weird procedure to identify diagonal elements...)
 
 
-%H = cell(N,M);
-H  = zeros(n*m,n*m,N,M);
+H  = cell(N,M);
+Ea = cell(N,M);
+Eb = cell(N,M);
+%H  = zeros(n*m,n*m,N,M);
 Hn = zeros(n*m,n*m,N,M);
 
 for i=1:N
@@ -52,8 +54,9 @@ for i=1:N
 		% elementary extraction matrix
 		theta_i          = sym_off(n,idO); % Eij
 	else
-		theta_i          = zeros(n);
-		theta_i(idD,idD) = 1; % Eii
+		%theta_i          = zeros(n);
+		%theta_i(idD,idD) = 1; % Eii
+		theta_i = sparse(idD,idD,1,n,n);
 	end
 	
 	for j=1:M
@@ -65,12 +68,18 @@ for i=1:N
 			% elementary matrix
 			theta_j          = sym_off(m,idO);
 		else
-			theta_j          = zeros(m);
-			theta_j(idD,idD) = 1;
+			%theta_j          = zeros(m);
+			%theta_j(idD,idD) = 1;
+			theta_j = sparse(idD,idD,1,m,m);
 		end
 		
 		Hij = kron(theta_i,theta_j);
-		H (:,:,i,j) = Hij;
+		
+		% store results
+		%H (:,:,i,j) = Hij;
+		H{i,j} = Hij;
+		Ea{i,j} = theta_i;
+		Eb{i,j} = theta_j;
 		Hn(:,:,i,j) = Hij / norm(Hij,'fro')^2;
 		
 		%H{i,j} = kron(theta_i,theta_j);
@@ -89,7 +98,7 @@ offdiag = ones(n);
 offdiag(logical(eye(n))) = 0;
 [A,B] = meshgrid(0:n-1);
 
-Ho = double(A+B==s) .* offdiag;
+Ho = sparse(double(A+B==s) .* offdiag);
 end
 
 
