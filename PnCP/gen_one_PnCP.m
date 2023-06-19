@@ -1,5 +1,6 @@
 function [phi,del,info,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
 %GEN_ONE_PNCP Generate a PnCP map
+%   Solve semidefinite optimization to generate a PnCP map
 %   Needs YALMIP
 %   Original author: Abhishek Bhardwaj (functions step3*)
 %
@@ -31,15 +32,15 @@ defaults = ...
 [verbose,maxorder,tol,method,toolbox,solver] = ...
 	process_options(varargin,defaults{:});
 
-
-
 switch toolbox
 	case 'yalmip'
+		if verbose
+			fprintf('%5s Setting up YALMIP variables\n','');
+		end
 		% YALMIP solver
 		x = sdpvar(n,1);
 		y = sdpvar(m,1);
 		z = kron(x,y);
-		
 		
 		% quadratic forms
 		vf = reshape(vf,n*m,n*m);
@@ -48,7 +49,11 @@ switch toolbox
 		h  = vh' * z; % h'*h SOS component
 
 		opt = sdpsettings('solver',solver); % preferably mosek
-		opt.verbose = verbose;
+		if verbose<=1
+			opt.verbose = 0;
+		else
+			opt.verbose = 1;
+		end
 
 		switch method
 			case 'klep'
@@ -64,6 +69,9 @@ switch toolbox
 				l = 1; % order of relaxation
 				flag = 0;
 				while l<=maxorder && ~flag
+					if verbose
+						fprintf('%5s Solving order %i of positive-non-sos relaxation problem\n','',l);
+					end
 					% Artin based relaxation with fixed denominator
 					relax = F * (kron(x,y)'*kron(x,y))^l; % kron(x,y) is simply all monomials of bi-degree 1
 
@@ -139,6 +147,18 @@ switch toolbox
 		phi = reshape(phi,[m*m,n*n]);
 		%
 		Phi = @(m,S) reshape(phi*S(:),[m,m]);
+		
+		% verbose
+		if verbose
+			if sol.problem
+				fprintf('%5s SDP was unsuccessfully solved: I do not know what was returned\n','');
+			elseif ~flag
+				fprintf('%5s SDP was succesfully solved, but map is not within tolerance\n','');
+			else
+				fprintf('%5s Map within tolerance found!\n','');
+			end
+		end
+				
 		
 	case 'cvx'
 		error('not implemented yet');
