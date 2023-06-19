@@ -34,6 +34,11 @@ tol_mode = strcmp(mode,'hit-tol'); % check for tolerance mode
 Maps   = [];
 Deltas = [];
 i      = 0;
+if verbose && tol_mode
+	fprintf('%2s Generate random PnCP until one works (maximum number of tries: %i)\n','',nmax)
+elseif verbose
+	fprintf('%2s Generate random PnCP, no quality control (maximum: %I)\n','',nmax);
+end
 while i<=nmax
 	%fprintf('%i ',i);
 	%if ~mod(i+1,30)

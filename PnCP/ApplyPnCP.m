@@ -1,4 +1,4 @@
-function [Mat,Mat2] = ApplyPnCP(dA,dB,rho,phi)
+function [Mat2,Mat] = ApplyPnCP(dA,dB,rho,phi)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Apply a PnCP on a given density matrix
 %   rho = mijkl Eij x Ekl
@@ -42,22 +42,24 @@ for i=1:size(E,1)
 	end
 end
 
-Mat = zeros(n);
-for i=1:dA
-    for j=1:dA
-        for k=1:dB
-            for l=1:dB
-                EmatA=zeros(3); % HARD CODED
-                EmatB=zeros(3); % HARD CODED
-                EmatA(i,j)=1;
-                EmatB(k,l)=1;
-                Etemp = kron(EmatA,EmatB) ; 
-                scaltemp = trace(rho'*Etemp); % computing mijkl
-                Mat = Mat + scaltemp*kron(EmatA,reshape(phi*EmatB(:),dB,dB)) ;% computes mijkl Eij * phi(Ekl)
-            end
-        end
-    end
-end
+
+% Gael version: without Eij + Eji structure (wrong?)
+% Mat = zeros(n);
+% for i=1:dA
+%     for j=1:dA
+%         for k=1:dB
+%             for l=1:dB
+%                 EmatA=zeros(3); % HARD CODED
+%                 EmatB=zeros(3); % HARD CODED
+%                 EmatA(i,j)=1;
+%                 EmatB(k,l)=1;
+%                 Etemp = kron(EmatA,EmatB);
+%                 scaltemp = trace(rho'*Etemp); % computing mijkl
+%                 Mat = Mat + scaltemp*kron(EmatA,reshape(phi*EmatB(:),dB,dB)) ;% computes mijkl Eij * phi(Ekl)
+%             end
+%         end
+%     end
+% end
 
 end
 
