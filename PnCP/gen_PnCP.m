@@ -24,7 +24,7 @@ nmax    = getoptions(options,'ntest',100);
 maxor   = getoptions(options,'maxorder',2);
 tol     = getoptions(options,'tol',1e-1);
 method  = getoptions(options,'method','klep');
-solver  = getoptions(options,'solver','sdpt3');
+solver  = getoptions(options,'solver','mosek');
 toolbox = getoptions(options,'toolbox','yalmip');
 verbose = getoptions(options,'verbose',1);
 
@@ -36,7 +36,7 @@ Deltas = [];
 i      = 0;
 if verbose && tol_mode
 	fprintf('%2s Generate random PnCP until one works (maximum number of tries: %i)\n','',nmax)
-elseif verbos
+elseif verbose
 	fprintf('%2s Generate random PnCP, no quality control (maximum: %i)\n','',nmax);
 end
 while i<=nmax
@@ -67,7 +67,7 @@ while i<=nmax
 	% one in K1
 	be = rand(1,d1);
 	v0 = sum(be.*K1,2);
-	v0 = reshape(v0,m,n); % rows and columns switched
+	v0 = reshape(v0,n,m); % rows and columns switched?
 
 	% all vectors
 	vh = cat(3,v0,vj);

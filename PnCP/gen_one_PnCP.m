@@ -1,5 +1,6 @@
 function [phi,del,info,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
 %GEN_ONE_PNCP Generate a PnCP map
+%   Solve semidefinite optimization to generate a PnCP map
 %   Needs YALMIP
 %   Original author: Abhishek Bhardwaj (functions step3*)
 %
