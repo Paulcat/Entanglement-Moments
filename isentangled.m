@@ -30,11 +30,15 @@ if sol.problem == 0
  disp('we do not know if the state is entangled')
 elseif sol.problem == 1
  disp('The state is entangled')
- for i=1:nbrmaps+1
+for i=1:nbrmaps+1
            if i==1
            X(i)=min(eig(PartialTranspose(g,2,dim)));
               if X(1)<0
                   display('the state is NPT')
+              elseif X(1)== 0
+                  display('the minimum vp is equal to 0')
+              else 
+                  display('the state is PPT')
               end
            else
                X(i)=min(eig(somepncp(g,2,dim)));
@@ -43,7 +47,7 @@ elseif sol.problem == 1
               end
            end
     
- end
+end
  
  %add the test fot the other pncp maps
 else

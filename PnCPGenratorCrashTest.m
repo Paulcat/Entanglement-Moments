@@ -7,6 +7,8 @@
 %            check if the min eigenvalue is negative ; if it is, break
 
 A = load('rho3x3.txt') ; 
+
+
 	 % set options
 	 options.mode     = 'hit-tol';
 	 options.tol      = 1e-2;
@@ -23,7 +25,6 @@ i=1;
 while i>0.11
     i=i-0.1;
     B = WhiteNoise(A,i) ; 
-    print('noise is equal to'i);
     answer=isentangled([2,2],B,[3,3]);
     if answer==0
         ntemp = 0 ; 
