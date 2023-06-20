@@ -1,6 +1,9 @@
 function [phi,del,info,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
 %GEN_ONE_PNCP Generate a PnCP map
-%   Solve semidefinite optimization to generate a PnCP map
+%   GEN_ONE_PNCP(n,m,vf,vh,varargin) solves a semidefinite optimization
+%   problem to generate a PnCP map (see last step in algorithm from
+%   [Klep,2017]).
+%   
 %   Needs YALMIP
 %   Original author: Abhishek Bhardwaj (functions step3*)
 %
@@ -23,7 +26,7 @@ d = n+m-2;
 defaults = ...
 	{'verbose', 2, ...
 	 'maxorder', 2 ... % maximum relaxation order
-	 'tolerance',1e-2,...
+	 'tolerance',1e-2,... % tolerance on delta
 	 'method','klep', ...
 	 'toolbox', 'yalmip', ...
 	 'solver', 'mosek',...
