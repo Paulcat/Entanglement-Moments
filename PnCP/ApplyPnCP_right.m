@@ -1,25 +1,19 @@
-function [Mat2,Mat] = ApplyPnCP(dA,dB,rho,phi)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply a PnCP on a given density matrix
+function [Mat] = ApplyPnCP_right(dA,dB,rho,phi)
+%APPLYPNCP Apply a PnCP on a given density matrix
 %   rho = mijkl Eij x Ekl
 %   Mat = mijkl Eij x phi(Ekl)
 %   rho := density matrix
 %   phi := PnCP map
+
+
 n = size(rho,1) ;  % assuming all matrices are square
 
-% TO DO : AUTOMATIZE SIZE OF da and db
-
-%da = 3;
-%db = 3;
 if(dA*dB ~=n)
     warning("Dimensions mismatch between Ha, Hb, and Ha x Hb")
 end
 
-% TO DO : REDUCE BASIS OF EIJ
-% TO DO : use multi indices
-
 [E,EA,EB] = gensymbasis(dA,dB);
-Mat2 = zeros(n);
+Mat = zeros(n);
 for i=1:size(E,1)
 	for j=1:size(E,2)
 		Eij = E{i,j};
@@ -35,15 +29,15 @@ for i=1:size(E,1)
 
 		% find coefficients of state in given basis
 		val = trace(rho'*Eij);
-
+		
 		% apply PnCP: acts on second factor
 		phiB = reshape(phi*EBij(:),[dB,dB]);
-		Mat2 = Mat2 + val * kron(EAij, phiB);
+		Mat = Mat + val * kron(EAij, phiB);
 	end
 end
 
 
-% Gael version: without Eij + Eji structure (wrong?)
+% without Eij + Eji structure (wrong?)
 % Mat = zeros(n);
 % for i=1:dA
 %     for j=1:dA
