@@ -1,24 +1,46 @@
-function [phi,del,info,Phi] = gen_one_PnCP(n,m,vf,vh,varargin)
+function [phi,del,info,Phi] = gen_one_map(n,m,vf,vh,varargin)
 %GEN_ONE_PNCP Generate a PnCP map
-%   GEN_ONE_PNCP(n,m,vf,vh,varargin) solves a semidefinite optimization
-%   problem to generate a PnCP map (see last step in algorithm from
-%   [Klep,2017]).
-%   
-%   Needs YALMIP
-%   Original author: Abhishek Bhardwaj (functions step3*)
+%   GEN_ONE_PNCP(n,m,vf,vh) solves a SDP program to generate a PnCP map.
 %
 %   Inputs:
-%       - n, m: dimensions
-%       - vf:   quadratic form, seen as tensor, ie 
-%               "vf(z x z)" = sum vf(i,j,k,l) z(i,j) z(k,l)
-%               where z(i,j) = x(i)*y(j) (Segre variety)
-%       - vh:   sum-of-squares factors, seen as tensor, ie
-%               "vh^2(zxz)" = sum (sum_a vh(i,j,a)*vh(k,l,a)) z(i,j) z(k,l)
-%
+%     -n : input dimension for map
+%     -m : output dimension for map
+%     -vf: quadratic form, seen as tensor, ie 
+%             "vf(z x z)" = sum vf(i,k,j,l) z(i,j) z(k,l)
+%           where z(i,j) = xi*yj (Segre variety)
+%     -vh: sum-of-squares factors, seen as tensor, ie
+%             "vh^2(zxz)" = sum (sum_a vh(i,j,a)*vh(k,l,a)) z(i,j) z(k,l)
+%   
 %   Options:
-%       - verbose
-%       - toolbox
-%       - solver
+%     -'method'   : -'KLEP': solves the SDP hierarchy
+%
+%                        max  delta  s.t. (vh + delta*vf) * p0(l) = sos
+%
+%                    where p0 is a fixed sos polynomial of degree 2l (see
+%                    step 3 of algorithm 4.3 in [Klep et al. 2017]).
+%
+%                   -'HILBERT': solves iteratively the feasibility programs
+%
+%                        min  1  s.t. (vh + delta0*vf) * sos1(l) = sos2
+%
+%                    where delta0 is decreased iteratively until success.
+%     -'maxorder' : limit on the relaxation order (l)
+%     -'tolerance': tolerance on delta (= must be greater than ...)
+%     -'toolbox'  : 'YALMIP' | 'CVX' (not yet implemented)
+%     -'solver'   : 'MOSEK' | 'SDPT3' | 'SeDuMi'
+%     -'verbose'  :
+%
+%   Outputs:
+%       - del: delta (or delta0) in the progrmas above
+%       - phi: map corresponding to the form vh + del*vh. It is returned as
+%              a matrix of size m*m x n*n (NB: there is a permutation
+%              between v(i,k,j,l) (forms) and phi(i,j,k,l) (map))
+%       - info:
+%   
+%   Needs YALMIP
+%   Original author: Abhishek Bhardwaj (see functions step3*)
+%
+%   See also GEN_PNCP
 
 d = n+m-2;
 
@@ -86,7 +108,7 @@ switch toolbox
 					del = value(delta);
 
 					% evaluate quality of solution
-					flag = sol.problem==0 && floor(log10(res))<-6 && del > tol;
+					flag = sol.problem==0 && floor(log10(res))<-5 && del > tol;
 					
 					l = l+1;
 				end
@@ -145,7 +167,7 @@ switch toolbox
 		% return PnCP map in correct format
 		phi = del * vf  + (vh*vh');
 		%phi = 2 * vf + (vh*vh');
-		phi = reshape(phi,[m,n,m,n]); % check carefully correct dimensions"
+		phi = reshape(phi,[m,n,m,n]); % check carefully correct dimensions
 		phi = permute(phi,[1,3,2,4]);
 		phi = reshape(phi,[m*m,n*n]);
 		%

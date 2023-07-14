@@ -1,9 +1,18 @@
 function [V,K,K1] = Klep_step1_2(n,m,Z,varargin)
-%KLEP_STEP1_2  Step 1.2 and 1.3 of algorithm described in [Klep et al.]
-%		Find vectors in kernel, define linear forms:
-%     Returns a tensor V of size m x n x (m+n-2) containing all the vectors
-%     vi of size m*n (seen as matrices m x n) representing the linear forms
-%     hi
+%KLEP_STEP1_2  Step 1.2 and 1.3 of algorithm in [Klep et al.,2017]
+%     V = KLEP_STEP1_2(n,m,Z) returns a tensor V of size m x n x (m+n-2)
+%     containing all the vectors (seen as matrices) Vi of size m x n,
+%     taken randomly in the kernel of the (random) matrix Z.
+%
+%     Each vector Vi represents a linear form hi.
+%
+%     [V,K,K1] = KLEP_STEP1_2(n,m,Z) also returns the kernels involved 
+%     (from Z and from Z(:,1:end-1)).
+%
+%     V = KLEP_STEP1_2(n,m,Z,'example') simply returns V as explicitely
+%     stated in the example 4.6 of [Klep et al., 2017].
+%
+%     %   See also KLEP_STEP1_1, KLEP_STEP2
 
 d = n+m-2;
 e = (n-1)*(m-1);
@@ -17,10 +26,10 @@ K  = null(Z'); % could be implemented with svd
 dK = size(K,2); %dimension of kernel. TODO: apparently dK = d, is that always true?
 
 % take random linear combination of vectors in K
-K2 = reshape(K,n*m,1,dK);
+K  = reshape(K,n*m,1,dK);
 al = rand(1,d,dK); % d random coefficients
 al = al./sum(al,3); % normalize
-Vj = sum(al.*K2,3); % each resulting column is a random convex combination of all the columns in K
+Vj = sum(al.*K,3); % each resulting column is a random convex combination of all the columns in K
 Vj = reshape(Vj,m,n,d); % row and columns are switched in my encoding
 
 if nargin > 3 % example 4.6 in [Klep et al.]

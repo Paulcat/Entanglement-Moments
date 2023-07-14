@@ -1,20 +1,25 @@
 function [H,Ea,Eb,Hn] = gensymbasis(n,m)
-%GEN_SYM_BASIS Generate elementary symmetric matrices
-%   GEN_SYM_BASIS(N,M) returns the list of matrices units H(i,j,k,l) such
-%   that
+%GENSYMBASIS Generate elementary symmetric matrices
+%   H = GENSYMBASIS(n,m) returns the list of matrices units H((i,j),(k,l))
+%   such that
 %
-%        v(x,y) * v(x,y)' =    Sum      H((i,j),(k,l)) x(i)x(j) y(k)y(l)
+%        v(x,y) * v(x,y)' =    Sum      H((i,j),(k,l)) xi*xj * yk*yl
 %                           i<=j, k<=l
 %
-%   where v is the vector of (1,1)-bihomegeneous monomials
+%   where v(x,y) := (x1*y1, x1*y2, ..., xn*ym). The matrices H((i,j),(k,l))
+%   form a basis for maps (which are in bijection with (2,2)-bihomogeneous
+%   polynomials, see [Klep et al., 2017]).
 %
-%        v(x,y) = ( x . y )
+%   Colexicographical ordering is assumed on the index r=(i,j) and s=(k,l).
+%   H is a cell array, H{r,s} is of size n*m x n*m.
 %
-%   v is of size (n*m), and H is a tensor of size (n*m x n*m x N x M)
+%   [H,SA,SB] = GENSYMBASIS(N,M) also returns the symmetric matrices
+%   SA{r,s} (nxn) and SB{r,s} (mxm) such that H{r,s} = SA{r,s} x SB{r,s}.
+%   SA(:,1) (resp. SB(1,:)) gives the canonical basis for symmetric
+%   matrices of size n (resp. m).
 %
-%   The system {H(i,j,k,l)} is a basis for (PnCP) maps (seen as tensors)
-%   (which are in bijection with the set of (2,2)-bihomogeneous
-%   polynomials)
+%   [H,SA,SB,Hn] = GENSYMBASIS(N,M) also returns the normalized basis
+%   Hn{a,b} = H{a,b} / norm(H{a,b}).
 
 
 kn = 2;

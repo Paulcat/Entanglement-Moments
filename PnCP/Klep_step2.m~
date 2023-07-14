@@ -5,15 +5,12 @@ function [v,K_inter] = Klep_step2(n,m,Z,varargin)
 %   that f is a (2,2)-biform which is not divisible by any of the forms hi
 %   lying in the kernel of the (random) matrix Z.
 %
-%   Main ideas: Derivative of 2x2 minors (Jacobian of Segre variety's
-%   generators) and corresponding nullspace, symmetry nullspace, random
+%   Main ideas: Derivative of 2x2 minors (Jacobian of Segre variety's generators) and
+%   generators) and corresponding nullspace, symmetry nullspace, random vector in
 %   vector in intersection of both.
 %
 %   [V,K] = KLEP_STEP2(n,m,Z) also returns the involved (intersection of)
-%   kernels.
-%
-%   V = KLEP_STEP2(n,m,Z,'example') simply returns V as explicitely given
-%   in example 4.6 of [Klep et al., 2017].
+%   kernels
 %
 %   See also KLEP_STEP1_1, KLEP_STEP1_2
 
