@@ -48,7 +48,7 @@ test = test_positive(phi);
 % reliable test, using Lasserre's hierarchy
 Maps = load('maplist30.mat');
 Maps = Maps.map_list;
-Map  = Maps{1}; % for example
+Map  = Maps{3}; % for example
 
 n = 4;
 m = 4;
