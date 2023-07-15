@@ -166,7 +166,6 @@ switch toolbox
 
 		% return PnCP map in correct format
 		phi = del * vf  + (vh*vh');
-		%phi = 2 * vf + (vh*vh');
 		phi = reshape(phi,[m,n,m,n]); % check carefully correct dimensions
 		phi = permute(phi,[1,3,2,4]);
 		phi = reshape(phi,[m*m,n*n]);

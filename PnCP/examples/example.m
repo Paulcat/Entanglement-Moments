@@ -2,8 +2,8 @@
 
 % set path: needs yalmip, mosek, gloptipoly, sedumi
 %addpath('../');
-%addpath(genpath('/export/home/pcatala/Documents/MATLAB/cvx/mosek'));
-%addpath(genpath('~/Workspace/build/yalmip'));
+addpath(genpath('/export/home/pcatala/Documents/MATLAB/cvx/mosek'));
+addpath(genpath('~/Workspace/build/yalmip'));
 
 % set up problem
 
@@ -12,8 +12,8 @@ dA = 3;
 dB = 3;
 
 % density matrix
-% rho = load('rho3x3.txt');
-rho = rand(dA*dB);
+rho = load('rho3x3.txt');
+%rho = rand(dA*dB);
 
 % dimensions for PnCP map Phi: M_n(C) -> M_m(C)
 n = dB; % necessarily n = dB
@@ -31,7 +31,7 @@ options.solver   = 'mosek';
 options.verbose  = 1;
 
 % generate PnCP
-[phi,delta] = gen_PnCP(n,m,options);
+[phi,delta] = gen_PnCP(n,m,options,'example');
 
 % apply PnCP
 MatAfterPnCP = ApplyPnCP_right(dA,dB,rho,phi);
@@ -52,7 +52,7 @@ Map  = Maps{3}; % for example
 
 n = 4;
 m = 4;
-[status,lower_bound] = check_map(Map,n,m,2);
+[status,lower_bound] = check_map(Map,n,m,3);
 
 
 

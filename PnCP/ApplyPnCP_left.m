@@ -15,27 +15,20 @@ if(dA*dB ~= R)
     warning("Dimensions mismatch between Ha, Hb, and Ha x Hb")
 end
 
-[E,EA,EB] = gensymbasis(dA,dB);
 Mat = zeros(R);
-for i=1:size(E,1)
-	for j=1:size(E,2)
-		Eij = E{i,j};
+for a=1:dA*dA
+	Ea    = zeros(dA); Ea(a) = 1;
+	
+	for b=1:dB*dB
+		Eb    = zeros(dB); Eb(b) = 1;
+		Eab   = kron(Ea,Eb);
 
-		% corresponding tensorial factorization
-		EAij = EA{i,j};
-		EBij = EB{i,j};
-
-		% % check
-		%if norm(Eij-kron(EAij,EBij),'fro')/norm(Eij,'fro') > 1e-12
-		%	error('incorrect matricial basis');
-		%end
-
-		% find coefficients of state in given basis
-		val = trace(rho'*Eij);
+		% find coefficients of state wrt {Eab} basis
+		val = trace(rho'*Eab) / norm(Eab,'fro')^2;
 		
-		% apply PnCP: acts on first factor
-		phiA = reshape(phi*EAij(:),[dA,dA]);
-		Mat  = Mat + val * kron(phiA, EBij);
+		% apply PnCP: acts on first (left) factor
+		phiA = reshape(phi*Ea(:),[dA,dA]);
+		Mat  = Mat + val * kron(phiA, Eb);
 	end
 end
 

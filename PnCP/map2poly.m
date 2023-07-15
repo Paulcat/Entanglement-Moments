@@ -25,30 +25,34 @@ deg = 2;
 N = nchoosek(n+deg-1,deg); % N = n(n+1)/2
 M = nchoosek(m+deg-1,deg);
 
-
 % bases for symetric matrices
-[~,Sn,Sm] = gensymbasis(n,m);
-Sn = Sn(:,1);
-Sm = Sm(1,:);
+Sn = gensymbasis(n);
+Sm = gensymbasis(m);
 
 p = zeros(N,M);
 for a=1:N
 	phia = reshape(Phi * Sn{a}(:),[n,n]);
+	
 	for b=1:M
 		p(a,b) = trace(Sm{b}'*phia);
 	end
+	
 end
 
 
 % obsolete
-% % list of indices (i,j) with 1<=i<=j<=n
-%[A,B] = meshgrid(1:n);
-%ij = [A(:),B(:)]; A = []; B = [];
-%ij(find(ij(:,1)>ij(:,2)),:) = []; % bijection from Delta to D (see notes)
-%
-%[A,B] = meshgrid(1:m);
-%kl = [A(:),B(:)]; A = []; B = [];
-%kl(find(kl(:,1)>kl(:,2)),:) = [];
+
+% list of indices (i,j) with 1<=i<=j<=n
+% [A,B] = meshgrid(1:n);
+% ij = [A(:),B(:)]; A = []; B = [];
+% ij(find(ij(:,1)>ij(:,2)),:) = []; % bijection from Delta to D (see notes)
+% 
+% [A,B] = meshgrid(1:m);
+% kl = [A(:),B(:)]; A = []; B = [];
+% kl(find(kl(:,1)>kl(:,2)),:) = [];
+% 
+% Phi2 = reshape(Phi,m,m,n,n);
+
 
 end
 

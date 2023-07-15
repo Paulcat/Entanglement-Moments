@@ -52,6 +52,17 @@ while i<=nmax
 		'toolbox',toolbox,...
 		'method',method,...
 		'tolerance',tol_de);
+	
+	if nargin >= 4
+		vfr = reshape(vf,n*m,n*m);
+		vhr = reshape(vh,n*m,[]);
+		delta = 2;
+		phi = delta*vfr + (vhr*vhr');
+		clear vfr vhr
+		phi = reshape(phi,[m,n,m,n]);
+		phi = permute(phi,[1,3,2,4]);
+		phi = reshape(phi,[m*m,n*n]);
+	end
 
 	if info.success
 		break;
