@@ -25,9 +25,12 @@ for a=1:dA*dA
 
 		% find coefficients of state wrt {Eab} basis
 		val = trace(rho'*Eab) / norm(Eab,'fro')^2;
+
+		% symmetrization
+		Ebs = (Eb+Eb')/2;
 		
 		% apply PnCP: acts on second (right) factor
-		phiB = reshape(phi*Eb(:),[dB,dB]);
+		phiB = reshape(phi*Ebs(:),[dB,dB]);
 		Mat = Mat + val * kron(Ea, phiB);
 	end
 end
