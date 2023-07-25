@@ -1,5 +1,9 @@
 function [Mat] = ApplyPnCPSym_right(dA,dB,rho,phi)
 %APPLYPNCPSYM_RIGHT Apply (extension of) a symmetric PnCP on the 2nd block
+%   M = APPLYPNCPSYM_RIGHT(dA,dB,rho,phi) returns M = (ID x PhiC)(rho),
+%   where PhiC is the extension to complex matrices of Phi:Sn -> Sm, which
+%   is guaranteed to be PnCP if Phi is. No structure on rho is required.
+%
 %   Inputs:
 %      - rho:   density matrix, rho := sum mijkl Eij x Ekl
 %      - phi:   (PnCP) map on symmetric matrices
@@ -8,11 +12,11 @@ function [Mat] = ApplyPnCPSym_right(dA,dB,rho,phi)
 %   Output:
 %      - Mat := sum mijkl Eij x phi((Ekl + Elk)/2)
 %
-%   Example:
-%      If Phi is the transposition operator, and rho = rhoA x rhoB is a
-%      (n,n) bipartite, separable state where rhoB is symmetric, then
-%      APPLYPNCPSYM_RIGHT(n,n,rho,Phi) is the same as PartialTranspose(rho)
-%      from QETLAB.
+%   Warning:
+%      Phi should not be a generic PnCP (eg the partial transpose): in that
+%      case, APPLYPNCPSYM_RIGHT actually applies (Id x (Phi o Sym))(rho),
+%      where Sym is the orthogonal projection on symmetric matrices. The
+%      resulting map (Phi o Sym) might not be PnCP (?).
 %
 %   See also ApplyPnCPSym_left
 
