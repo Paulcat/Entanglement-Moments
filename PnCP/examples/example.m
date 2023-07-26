@@ -34,7 +34,7 @@ options.verbose  = 1;
 [phi,delta] = gen_PnCP(n,m,options,'example');
 
 % apply PnCP
-MatAfterPnCP = ApplyPnCP_right(dA,dB,rho,phi);
+MatAfterPnCP = ApplyPnCPSym_right(dA,dB,rho,phi);
 
 %% test positivity
 
