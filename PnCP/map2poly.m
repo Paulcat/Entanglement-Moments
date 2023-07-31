@@ -10,6 +10,8 @@ function p = map2poly(Phi)
 %   P is a matrix indexed by r=(i,j) (1<=i<=j<=n) and s=(k,l) (1<=k<=l<=m),
 %   in colexicographic order, such that P(r,s) is the coefficient of the
 %   monomial xi*xj*yk*yl.
+%
+%   See also poly2map
 
 [m,n] = size(Phi);
 n     = sqrt(n);
@@ -25,7 +27,7 @@ deg = 2;
 N = nchoosek(n+deg-1,deg); % N = n(n+1)/2
 M = nchoosek(m+deg-1,deg);
 
-% bases for symetric matrices
+% bases for symmetric matrices
 Sn = gensymbasis(n);
 Sm = gensymbasis(m);
 
