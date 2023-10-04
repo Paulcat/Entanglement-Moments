@@ -1,4 +1,4 @@
-function [phi,delta] = gen_PnCP(n,m,options,varargin)
+function [phi,delta,flag] = gen_PnCP(n,m,options,varargin)
 %GEN_PNCP Generate a PnCP map following [Klep, 2017]
 %   PHI = GEN_PNCP(n,m,options) returns a (PnCP) map.
 %
@@ -80,6 +80,10 @@ else
 	fprintf('\t map found: residual=%d, delta=%d, sdpflag = %i\n',...
 		info.res,delta,info.flag_sol)
 end
+
+% additional post-check
+flag = check_map(phi,n,m,3);
+
 
 end
 

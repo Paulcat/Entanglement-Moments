@@ -24,17 +24,20 @@ m = dB;
 % set options (see gen_pncp for details)
 options = struct;
 options.tol      = 1e-3; % tolerance on PnCP map 'quality'
-options.ntest    = 50; % maximum number of trials
+options.ntest    = 10; % maximum number of trials
 options.method   = 'klep'; % choice of implementation
 options.maxorder = 1; % maximum relaxation order
 options.solver   = 'mosek';
 options.verbose  = 1;
 
 % generate PnCP
-[phi,delta] = gen_PnCP(n,m,options,'example');
+flag = 0;
+while flag ~= 1
+   [phi,delta,flag] = gen_PnCP(n,m,options);
+end
 
 % apply PnCP
-MatAfterPnCP = ApplyPnCPSym_right(dA,dB,rho,phi);
+% MatAfterPnCP = ApplyPnCPSym_right(dA,dB,rho,phi);
 
 %% test positivity
 
@@ -52,7 +55,7 @@ Map  = Maps{3}; % for example
 
 n = 4;
 m = 4;
-[status,lower_bound] = check_map(Map,n,m,3);
+flag = check_map(Map,n,m,3);
 
 
 

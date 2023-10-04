@@ -74,19 +74,19 @@ while status ~= 1 && order <= max_order
 	
 	% code may be heavy for local laptop...
 	fprintf('Relaxation order: %i\n', order);
-	prompt = 'MATLAB may crash for large orders. Do you want to proceed? Y/N [N]: ';
-	txt = input(prompt,'s');
-	if isempty(txt)
-		txt = 'N';
-	end
+	%prompt = 'MATLAB may crash for large orders. Do you want to proceed? Y/N [N]: ';
+	%txt = input(prompt,'s');
+	%if isempty(txt)
+	%	txt = 'N';
+	%end
 	
-	if strcmpi(txt,'Y')
+	%if strcmpi(txt,'Y')
 		[status,obj] = msol(Pb);
-	else
-		fprintf('Code did not run\n');
-		status = 0;
-		obj = -Inf;
-	end
+	%else
+	%	fprintf('Code did not run\n');
+	%	status = 0;
+	%	obj = -Inf;
+	%end
 	
 	order = order+1;
 end
@@ -121,6 +121,8 @@ elseif status == 1 && obj == -Inf
 	fprintf('%20s\n', 'Map is not positive');
 	fprintf('%+20s : %i (1: collapse)\n', 'status (G)', status);
 	fprintf('%+20s : %d\n', 'min (G)', obj);
+
+   flag = -1;
 	
 else
 	% sos is not satisfied
@@ -131,5 +133,7 @@ else
 	fprintf('%20s\n', 'Nonnegativity could not be checked');
 	fprintf('%+20s : %i (0: no collapse, -1: not solved)\n', 'status (G)', status);
 	fprintf('%+20s : %d\n', 'min/bound (G)', obj);
+
+   flag = 0;
 end
 fprintf('\n');

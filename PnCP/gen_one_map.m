@@ -175,11 +175,11 @@ switch toolbox
 		% verbose
 		if verbose
 			if sol.problem
-				fprintf('%5s SDP was unsuccessfully solved: I do not know what was returned\n','');
+				fprintf('%5s SDP was unsuccessfully solved: sol.problem: %i\n','',sol.problem);
 			elseif ~flag
-				fprintf('%5s SDP was succesfully solved, but map is not within tolerance\n','');
+				fprintf('%5s SDP was succesfully solved, but map is not within tolerance: %d\n','',del);
 			else
-				fprintf('%5s Map within tolerance found!\n','');
+				fprintf('%5s Map within tolerance found: %d\n','',del);
 			end
 		end
 				
