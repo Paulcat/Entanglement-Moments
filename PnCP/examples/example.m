@@ -12,8 +12,7 @@ dA = 3;
 dB = 3;
 
 % density matrix
-rho = load('rho3x3.txt');
-%rho = rand(dA*dB);
+%rho = load('rho3x3.txt');
 
 % dimensions for PnCP map Phi: M_n(C) -> M_m(C)
 n = dB; % necessarily n = dB
@@ -31,9 +30,17 @@ options.solver   = 'mosek';
 options.verbose  = 1;
 
 % generate PnCP
-flag = 0;
-while flag ~= 1
-   [phi,delta,flag] = gen_PnCP(n,m,options);
+nmap  = 20;
+PnCPs  = cell(1,nmap);
+deltas = zeros(1,20);
+for i = 1:nmap
+   flag = 0;
+   while flag ~= 1
+      [phi,delta,flag] = gen_PnCP(n,m,options,'example');
+   end
+
+   PnCPs{i}  = phi;
+   deltas(i) = delta;
 end
 
 % apply PnCP
