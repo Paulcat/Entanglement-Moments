@@ -2,14 +2,13 @@
 
 % set path: needs yalmip, mosek, gloptipoly, sedumi
 %addpath('../');
-addpath(genpath('/export/home/pcatala/Documents/MATLAB/cvx/mosek'));
-addpath(genpath('~/Workspace/build/yalmip'));
+
 
 % set up problem
 
 % choice of a bipartite decomposition
 dA = 3;
-dB = 3;
+dB = 4;
 
 % density matrix
 %rho = load('rho3x3.txt');
@@ -23,20 +22,20 @@ m = dB;
 % set options (see gen_pncp for details)
 options = struct;
 options.tol      = 1e-3; % tolerance on PnCP map 'quality'
-options.ntest    = 10; % maximum number of trials
+options.ntest    = 100; % maximum number of trials
 options.method   = 'klep'; % choice of implementation
-options.maxorder = 1; % maximum relaxation order
+options.maxorder = 3; % maximum relaxation order
 options.solver   = 'mosek';
 options.verbose  = 1;
 
 % generate PnCP
-nmap  = 20;
+nmap  = 1;
 PnCPs  = cell(1,nmap);
 deltas = zeros(1,20);
 for i = 1:nmap
    flag = 0;
    while flag ~= 1
-      [phi,delta,flag] = gen_PnCP(n,m,options,'example');
+      [phi,delta,flag] = gen_PnCP(n,m,options);
    end
 
    PnCPs{i}  = phi;

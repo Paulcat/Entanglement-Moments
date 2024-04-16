@@ -27,3 +27,17 @@ A(12,3)=5;
 A(12,12)=5;
 
 rho2 = A/60;
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+delta = zeros(9,9);
+delta(1,1) = 1;
+delta(1,5) = 1;
+delta(1,9) = 1;
+delta(5,1) = 1;
+delta(5,5) = 1;
+delta(5,9) = 1;
+delta(9,1) = 1;
+delta(9,5) = 1;
+delta(9,9) = 1;
+delta = delta/3;

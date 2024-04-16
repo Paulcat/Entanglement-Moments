@@ -5,43 +5,45 @@
 % checked ; if at least one is negative, the entanglement is detected ;
 % otherwise a new map is generated
 
-rho = load('rho3x3.txt');
+%rho = load('rho3x3.txt');
 
 
 
 
 [dA,dB] = deal(4,3);
+n = dB ;
+m  = dB;
 %rho = eye(9) ;
 
-% A = -1*ones(12,12);
-% A(1,1)=5;
-% A(1,2)=5;
-% A(2,1)=5;
-% A(2,2)=5;
-% A(3,3)=5;
-% A(3,12)=5;
-% A(4,4)=5;
-% A(4,10)=5;
-% A(5,5)=5;
-% A(5,6)=5;
-% A(6,5)=5;
-% A(6,6)=5;
-% A(7,7)=5;
-% A(7,9)=5;
-% A(8,8)=5;
-% A(8,11)=5;
-% A(9,9)=5;
-% A(9,7)=5;
-% A(10,4)=5;
-% A(10,10)=5;
-% A(11,8)=5;
-% A(11,11)=5;
-% A(12,3)=5;
-% A(12,12)=5;
+A = -1*ones(12,12);
+A(1,1)=5;
+A(1,2)=5;
+A(2,1)=5;
+A(2,2)=5;
+A(3,3)=5;
+A(3,12)=5;
+A(4,4)=5;
+A(4,10)=5;
+A(5,5)=5;
+A(5,6)=5;
+A(6,5)=5;
+A(6,6)=5;
+A(7,7)=5;
+A(7,9)=5;
+A(8,8)=5;
+A(8,11)=5;
+A(9,9)=5;
+A(9,7)=5;
+A(10,4)=5;
+A(10,10)=5;
+A(11,8)=5;
+A(11,11)=5;
+A(12,3)=5;
+A(12,12)=5;
 
 rho2 = A/60;
 
-rho2=rho;
+%rho2=rho;
 phi_working = {};
 
 nmax = 10;
@@ -54,8 +56,7 @@ while j > 0
 	 fprintf('--------\n');
 
 	 % set options
-	 options.mode     = 'hit-tol';
-	 options.tol      = 1e-4;
+	 options.tol      = 1e-2;
 	 options.ntest    = 30;
 	 options.method   = 'klep';
 	 options.maxorder = 1;
@@ -64,13 +65,13 @@ while j > 0
 	 options.verbose  = 1;
 
 	 tic;
-    [phi,delta] = gen_PnCP(dA,dB,options);
+    [phi,delta] = gen_PnCP(n,m,options);
 	 tt = toc;
 	 
 	 % store computational time
 	 times(nmax-j) = tt ;
 	 
-    [~,Mattemp] = ApplyPnCP(dA,dB,rho2,phi);
+    Mattemp = ApplyPnCPSym_right(dA,dB,rho2,phi);
     ntemp = min(eig(Mattemp));
     if ntemp < 0
         fprintf('%i. Entanglement detected, youhou!!\n',nmax-j);
