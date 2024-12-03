@@ -19,7 +19,7 @@ A = load('rho3x3.txt') ;
 	 options.toolbox  = 'yalmip';
 	 options.verbose  = 0;
 
-     %% Dimensions hard-coded WARNING
+     %% Dimensions hard-coded
 dA = 3;
 dB = 3; 
 %%

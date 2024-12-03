@@ -5,14 +5,14 @@
 % checked ; if at least one is negative, the entanglement is detected ;
 % otherwise a new map is generated
 
-<<<<<<< Updated upstream
-%rho = load('rho3x3.txt');
-=======
+%<<<<<<< Updated upstream
+rho = load('rho3x3.txt');
+%=======
 A = load('rho3x3.txt');
 psi=[1/sqrt(2),0,0,1/sqrt(2)];
 state=psi'*psi;
 
->>>>>>> Stashed changes
+%>>>>>>> Stashed changes
 
 
 
@@ -72,21 +72,21 @@ while j > 0
 	 options.verbose  = 1;
 
 	 tic;
-<<<<<<< Updated upstream
+%<<<<<<< Updated upstream
     [phi,delta] = gen_PnCP(n,m,options);
-=======
+%=======
     [phi,delta] = gen_PnCP(2,2,options);
->>>>>>> Stashed changes
+%>>>>>>> Stashed changes
 	 tt = toc;
 	 
 	 % store computational time
 	 times(nmax-j) = tt ;
 	 
-<<<<<<< Updated upstream
+%<<<<<<< Updated upstream
     Mattemp = ApplyPnCPSym_right(dA,dB,rho2,phi);
-=======
+%=======
     Mattemp = ApplyPnCP(state,phi);
->>>>>>> Stashed changes
+%>>>>>>> Stashed changes
     ntemp = min(eig(Mattemp));
     if ntemp < 0
         fprintf('%i. Entanglement detected, youhou!!\n',nmax-j);

@@ -82,7 +82,7 @@ else
 end
 
 % additional post-check
-flag = check_map(phi,n,m,3);
+%flag = check_map(phi,n,m,3);
 
 
 end
