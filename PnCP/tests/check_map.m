@@ -1,7 +1,7 @@
 function flag = check_map(Phi,n,m,max_order)
 %CHECK_MAP check positivity of a map
 %   S = CHECK_MAP(Phi,n,m,order) checks if the map Phi: Sn -> Sm is PnCP by
-%   checking nonnegatvity and sos-ity of the corresponding polynomial. 
+%   checking nonnegativity and sos-ity of the corresponding polynomial. 
 %
 %   Inputs:
 %      - n,m:       input and output dimensions of the map (integers)

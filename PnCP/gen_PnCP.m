@@ -1,4 +1,4 @@
-function [phi,delta,flag] = gen_PnCP(n,m,options,varargin)
+function [phi,delta] = gen_PnCP(n,m,options,varargin)
 %GEN_PNCP Generate a PnCP map following [Klep, 2017]
 %   PHI = GEN_PNCP(n,m,options) returns a (PnCP) map.
 %
@@ -74,8 +74,8 @@ end
 
 if i==nmax+1
 	% no satisfying map was found
-	fprintf('\t no satisfying map was found, returning random map\n');
-	phi = rand(m^2,n^2);
+	fprintf('\t no satisfying map was found, returning 0\n');
+	phi = 0;
 else
 	fprintf('\t map found: residual=%d, delta=%d, sdpflag = %i\n',...
 		info.res,delta,info.flag_sol)

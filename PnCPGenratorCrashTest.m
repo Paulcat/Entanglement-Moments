@@ -22,6 +22,8 @@ A = load('rho3x3.txt') ;
      %% Dimensions hard-coded WARNING
 dA = 3;
 dB = 3; 
+
+
 %%
 i=1;
 while i>0.11

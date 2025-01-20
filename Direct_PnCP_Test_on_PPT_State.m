@@ -19,16 +19,16 @@ A = load('rho3x3.txt') ;
 	 options.toolbox  = 'yalmip';
 	 options.verbose  = 0;
 
-     %% Dimensions hard-coded
+     %% Dimensions hard-coded WARNING
 dA = 3;
 dB = 3; 
+
+
 %%
 i=1;
 while i>0.11
     i=i-0.1
-    B = WhiteNoise(A,i) ; 
-    answer=isentangled([2,2],B,[3,3]);
-    if answer==0
+    B = WhiteNoise(A,i) ;    
         ntemp = 0.1 ; 
         j = 10 ; % Max number of PnCP
         while ntemp > 0 && j > 0
@@ -38,9 +38,6 @@ while i>0.11
             Mattemp=ApplyPnCPSym_left(dA,dB,B,phi);
             ntemp = min(eig(Mattemp))
         end
-    else
-        disp('PnCP generator not needed')
-    end
 end
 
 if ntemp < 0
