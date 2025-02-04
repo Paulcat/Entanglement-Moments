@@ -21,12 +21,12 @@ t = sdpvar(1, 1);
 Constraints = [rho >= 0, 0.99 <= trace(rho) <= 1.01];  % rho is SDP and trace 1
 
 % Ensure `t` is the smallest eigenvalue of A
-Constraints = [Constraints, A - t*eye(size(A)) >= 0];  
+Constraints = [Constraints, A - t*eye(size(A)) >= 0];  % This ensures t is the minimum eigenvalue of A
 
-% Ensure that `t < 0` to force A to have a negative eigenvalue
-Constraints = [Constraints, t <= -1];  
+% **NEW CONSTRAINT**: Ensure that `t < 0` to force A to have a negative eigenvalue
+Constraints = [Constraints, t <= -1];  % Use a small negative threshold to ensure strict negativity
 
-%Constraints = [Constraints, rho >= 1e-6 * eye(size(rho))]; % so that rho is not a 0 state
+Constraints = [Constraints, rho >= 1e-6 * eye(size(rho))]; % so that rho is not a 0 state
 
 %%
 % Objective: Minimize the smallest eigenvalue
@@ -50,8 +50,8 @@ rho_optimal = rho_optimal / trace(rho_optimal);  % Rescale so trace = 1
 
 disp(['Optimal t: ', num2str(value(t))]);
 
-disp('rho optimal eigenvalues:');
-disp(eig(rho_optimal));
+disp('rho optimal:');
+disp(rho_optimal);
 
 disp('Eigenvalues of optimal rho after application of PnCP map:');
 temp_map=ApplyPnCPSym_left(d, d, rho_optimal, phi);

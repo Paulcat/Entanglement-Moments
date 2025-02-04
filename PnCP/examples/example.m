@@ -8,7 +8,7 @@
 
 % choice of a bipartite decomposition
 dA = 3;
-dB = 4;
+dB = 3;
 
 % density matrix
 %rho = load('rho3x3.txt');
