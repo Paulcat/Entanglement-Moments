@@ -21,7 +21,7 @@ GellMann(:,:,9) = eye(3);                                     % 1|
 % 
 % Witness=kron(Unitary,Unitary);
 full_vector = zeros(81, 1); % Step 1: Create a zero vector (81x1)
-indices = randperm(81, 18); % Step 3: Select 10 unique random positions
+indices = randperm(81, 18); % Step 3: Select 18 unique random positions
 
 full_vector(indices) = alpha; % Step 4: Insert values at random positions
 Witness = zeros(d*d,d*d);

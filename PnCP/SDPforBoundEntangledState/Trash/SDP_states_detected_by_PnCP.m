@@ -1,5 +1,8 @@
 clear all;
 
+%%% WRONG CONSTRAINTS NOT CONVEX
+
+
 d=3;
 load('PnCP_Igor.mat')
 load('rho_initialization_dim3');  % Load an initial rho solution

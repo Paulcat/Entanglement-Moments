@@ -7,8 +7,8 @@
 % set up problem
 
 % choice of a bipartite decomposition
-dA = 3;
-dB = 3;
+dA = 4;
+dB = 4;
 
 % density matrix
 %rho = load('rho3x3.txt');
@@ -22,7 +22,7 @@ m = dB;
 % set options (see gen_pncp for details)
 options = struct;
 options.tol      = 1e-3; % tolerance on PnCP map 'quality'
-options.ntest    = 100; % maximum number of trials
+options.ntest    = 1000; % maximum number of trials
 options.method   = 'klep'; % choice of implementation
 options.maxorder = 3; % maximum relaxation order
 options.solver   = 'mosek';

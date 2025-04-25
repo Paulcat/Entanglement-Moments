@@ -1,4 +1,4 @@
-function [phi,delta] = gen_PnCP(n,m,options,varargin)
+function [phi,delta,flag] = gen_PnCP(n,m,options,varargin)
 %GEN_PNCP Generate a PnCP map following [Klep, 2017]
 %   PHI = GEN_PNCP(n,m,options) returns a (PnCP) map.
 %
@@ -31,9 +31,13 @@ toolbox = getoptions(options,'toolbox','yalmip');
 verbose = getoptions(options,'verbose',1);
 
 
-i      = 0;
+
+% PhiCells={};
+% 
+% parfor i=1:nmax
+i= 0;
 while i<=nmax
-	% Klep setps 1 and 2
+	%Klep setps 1 and 2
 	if nargin < 4
 		Z  = Klep_step1_1(n,m);
 		vh = Klep_step1_2(n,m,Z);
@@ -43,6 +47,10 @@ while i<=nmax
 		vh = Klep_step1_2(n,m,Z,'example');
 		vf = Klep_step2(n,m,Z,'example');
 	end
+
+    Z  = Klep_step1_1(n,m);
+	vh = Klep_step1_2(n,m,Z);
+	vf = Klep_step2(n,m,Z);
 
 	% Klep step 3: compute PnCP map
 	[phi,delta,info]  = gen_one_map(n,m,vf,vh,...
@@ -64,13 +72,18 @@ while i<=nmax
 		phi = reshape(phi,[m*m,n*n]);
 	end
 
-	if info.success
-		break;
-	end
+% 	if info.success
+%         disp(i)
+% 		PhiCells{i}=phi;
+%         fprintf('\t map found: residual=%d, delta=%d, sdpflag = %i\n',...
+% 		info.res,delta,info.flag_sol)
+%     else
+%         fprintf('\t no satisfying map was found, returning 0\n');
+% 	end
 	
-	i = i+1;
+    i = i+1;
 end
-%fprintf('\n\n');
+fprintf('\n\n');
 
 if i==nmax+1
 	% no satisfying map was found
@@ -81,8 +94,8 @@ else
 		info.res,delta,info.flag_sol)
 end
 
-% additional post-check
-%flag = check_map(phi,n,m,3);
+additional post-check
+flag = check_map(phi,n,m,3);
 
 
 end

@@ -1,4 +1,4 @@
-function Op = Optimize_GellMann_Coefficients(rho, num_trials)
+function [best_distance,best_alpha] = Optimize_GellMann_Coefficients(rho, num_trials)
     d = 3;
     num_coeffs = 2*d * d; % 9 coefficients
 
