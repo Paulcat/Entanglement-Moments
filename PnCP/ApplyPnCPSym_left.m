@@ -27,7 +27,8 @@ if(dA*dB ~= R)
     warning("Dimensions mismatch between Ha, Hb, and Ha x Hb")
 end
 
-Mat = zeros(R);
+Matr = zeros(R);
+Mati = zeros(R);
 for a=1:dA*dA
 	Ea    = zeros(dA); Ea(a) = 1;
 	
@@ -36,14 +37,17 @@ for a=1:dA*dA
 		Eab   = kron(Ea,Eb);
 
 		% find coefficients of state wrt {Eab} basis
-		val = trace(rho'*Eab) / norm(Eab,'fro')^2;
+		% val = trace(rho'*Eab) / norm(Eab,'fro')^2;
+
+      % with complexification
+      val = trace(rho.'*Eab) / norm(Eab,'fro')^2;
 		
 		% symmetrization
 		Eas = (Ea+Ea')/2;
 
 		% apply PnCP: acts on first (left) factor
 		phiA = reshape(phi*Eas(:),[dA,dA]);
-		Mat  = Mat + val * kron(phiA, Eb);
+      Mat = Mat + val * kron(phiA, Eb);
 	end
 end
 
